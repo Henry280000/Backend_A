@@ -3,8 +3,22 @@ const  bcrypt = require('bcryptjs')
 const asyncHandler = require('express-async-handler')
 const User = require('../models/usersModel')
 
-const login = asyncHandler (async(req, res)=> {
-    res.status(200).json({message: 'login'})
+const login = asyncHandler(async(req, res) => {
+    const {email, password} = req.body;
+    //verificamos que el usuario exista
+    const user = await User.findOne({email});
+    //si el usuario existe 
+    if (user && (await bcrypt.compare(password, user.password))) {
+        res.status(200).json({
+            _id: user.id,
+            nombre: user.nombre,
+            email: user.email,
+            token: generarToken(user._id)
+        })
+    } else {
+        res.status(400)
+        throw new Error('Credenciales incorrectas')
+    }
 })
 const register =asyncHandler( async(req, res)=> {
     const {nombre, email, password} = req.body;
@@ -30,9 +44,10 @@ const register =asyncHandler( async(req, res)=> {
         //si el usuario se creo bien se mostrara
         if (user){
             res.status(201).json({
-                _id: user.id,
+                _id: user._id,
                 nombre: user.nombre,
-                email: user.email
+                email: user.email,
+                token: generarToken(user._id)
             })
         }else {
             res.status(400)
@@ -41,8 +56,14 @@ const register =asyncHandler( async(req, res)=> {
     }
 })
 const data = asyncHandler(async(req, res)=> {
-    res.status(200).json({message: 'data'})
+    res.status(200).json(req.user)
 })
+
+const generarToken = (id) => {
+    return jwt.sign({id}, process.env.JWT_SECRET, {
+        expiresIn: '30d'
+    }) 
+}
 
 module.exports = {
     login,
