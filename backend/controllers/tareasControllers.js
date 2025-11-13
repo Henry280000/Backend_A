@@ -29,10 +29,10 @@ const updateTareas = asyncHandler(async(req, res) => {
         //verificamos que la tarea a modificar es la del usuario logueado
         if (tarea.user.toString() !== req.user.id){
         res.status(401);
-        throw new Error('No autorizo')
+        throw new Error('No autorizado')
         }else{
     const tareaUpdated = await Tarea.findByIdAndUpdate(req.params.id, req.body,{new:true});
-    res.status(200).jason(tareaUpdated)
+    res.status(200).json(tareaUpdated)
 }});
 
 

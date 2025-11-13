@@ -14,7 +14,7 @@ const userSchema = mongoose.Schema({
         required: [true, "Por favor escribe tu email"],
         unique: true
     },
-    Admi:{
+    admin:{
         type: Boolean,
         default: false
     }

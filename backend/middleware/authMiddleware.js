@@ -4,6 +4,7 @@ const User = require('../models/usersModel')
 
 const protect = asyncHandler(async (req, res, next) => {
     let token;
+    
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
         try {
             //obtengo el token
@@ -18,9 +19,7 @@ const protect = asyncHandler(async (req, res, next) => {
             res.status(401)
             throw new Error('No autorizado, token invalido')
         }
-    }
-    
-    if (!token) {
+    } else {
         res.status(401)
         throw new Error('No autorizado, no hay token')
     }
