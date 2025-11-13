@@ -36,9 +36,8 @@ const deleteTareas = asyncHandler(async(req, res) => {
     if (!tarea){
         res.status(404);
         throw new Error('Tarea no encontrada')
-    
     }
-    await tarea.remove();
+    await tarea.deleteOne();
     res.status(200).json({id: req.params.id});
 });
 
